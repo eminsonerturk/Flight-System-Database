@@ -2,7 +2,7 @@
 
 Flight System Database Design and Implementation
 
-  A flight system database was designed for any airport and specific operations were performed on the relevant data.
+  Within the scope of the project, a flight system database was designed for any airport and specific operations were performed on the relevant data.
   
   If you want to see the architecture and design of the system, you can review the FlightSystemArchitecture.jpg file.
   
