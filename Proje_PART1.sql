@@ -26,37 +26,39 @@ WHERE Departure_airport_code = '2A9' AND Arrival_airport_code = '2A3';
 
 -- TRIGGER KOMUTLARIM..
 
-
---FARE Tablosuna uçuþ ücreti 10 dolar ve altýnda bilgi girilemez.. Örnek varsayýma göre yapýlmýþtýr..
-CREATE TRIGGER FareAmountSinirlama
-	ON FARE
+-- FLIGHT_LEG tablosuna insert edilen Departure ve Arrival Code'un Airport tablosundaki AirportCode içinde olup olmadýðýna bakmaktadýr.
+CREATE TRIGGER AirportInsert
+	ON FLIGHT_LEG
 	INSTEAD OF INSERT
 AS
 BEGIN
 	SET NOCOUNT ON;
-		IF EXISTS (SELECT Amount FROM inserted WHERE inserted.Amount <= 10) 
+		IF NOT EXISTS (SELECT Airport_code FROM inserted, AIRPORT WHERE inserted.Arrival_airport_code = AIRPORT.Airport_code) 
 			BEGIN
-				PRINT 'Ekleme iþlemi yapýlamadý. Inserted tablosuna 10 dolar ve altýnda veri giriþi yapýlamaz..'
+				PRINT 'Ekleme iþlemi yapýlamadý. Arrival Airport code, Airport tabloundaki Airport_code sekmesinde bulunamadý..'
+				ROLLBACK TRANSACTION
+			END;
+		ELSE IF NOT EXISTS (SELECT Airport_code FROM inserted, AIRPORT WHERE inserted.Departure_airport_code = AIRPORT.Airport_code)
+			BEGIN
+				PRINT 'Ekleme iþlemi yapýlamadý. Departure Airport code, Airport tabloundaki Airport_code sekmesinde bulunamadý..'
 				ROLLBACK TRANSACTION
 			END;
 		ELSE
 			BEGIN
-			INSERT FARE SELECT * FROM inserted; 
+			INSERT FLIGHT_LEG SELECT * FROM inserted; 
 			PRINT 'Ekleme iþlemi baþarýyla yapýldý.';
 			END;
 	SET NOCOUNT OFF;
 END;
 
 -- örnek veri ekleme komutu..
-insert into FARE VALUES('DSFG56', '1RT', 9, 'Uçaða; yiyecek ve içecek alýnmayacaktýr.'); 
+insert into FLIGHT_LEG VALUES('DSFG56', 3, '0AK', '12:40:00', '2A9', '15:15:00'); 
 -- örnek veri silme komutu..
-delete from FARE WHERE Flight_number = 'DSFG56' AND Fare_code = '1RT';
+delete from FLIGHT_LEG WHERE Flight_number = 'DSFG56' AND Leg_number = 3;
 --tüm verileri listeleme komutu..
-select * from FARE;
+select * from FLIGHT_LEG;
 --Airport Insert Trigger'ýný silme komutu
-DROP TRIGGER FareAmountSinirlama;
--- Doðru veriyi tekrar ekleme komutu
-insert into FARE VALUES('DSFG56', '1RT', 1000.30, 'Uçaða; yiyecek ve içecek alýnmayacaktýr.'); 
+DROP TRIGGER AirportInsert;
 
 
 

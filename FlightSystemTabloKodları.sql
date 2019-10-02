@@ -76,11 +76,7 @@ CREATE TABLE FLIGHT_LEG (
 
     CONSTRAINT  Fk_Flight_Leg_Flight FOREIGN KEY (Flight_number) REFERENCES FLIGHT (Flight_number)
 	
-	ON UPDATE CASCADE ON DELETE CASCADE,
-
-	CONSTRAINT  Fk_Flight_Airport_Dep_Code FOREIGN KEY (Departure_airport_code) REFERENCES AIRPORT (Airport_code),
-
-	CONSTRAINT  Fk_Flight_Airport_Arrival_Code FOREIGN KEY (Arrival_airport_code) REFERENCES AIRPORT (Airport_code)
+	ON UPDATE CASCADE ON DELETE CASCADE
 
 );
 
@@ -165,11 +161,7 @@ CREATE TABLE LEG_INSTANCE (
 
     ON UPDATE CASCADE ON DELETE CASCADE,
 
-    CONSTRAINT Fk_Leg_Instance_Airplane FOREIGN KEY (Airplane_id) REFERENCES AIRPLANE (Airplane_id),
-
-	CONSTRAINT  Fk_Leg_Airport_Dep_Code FOREIGN KEY (Departure_airport_code) REFERENCES AIRPORT (Airport_code),
-	
-	CONSTRAINT  Fk_Leg_Airport_Arrival_Code FOREIGN KEY (Arrival_airport_code) REFERENCES AIRPORT (Airport_code)
+    CONSTRAINT Fk_Leg_Instance_Airplane FOREIGN KEY (Airplane_id) REFERENCES AIRPLANE (Airplane_id)
 
 );
 
